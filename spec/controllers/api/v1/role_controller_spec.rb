@@ -1,6 +1,4 @@
-require 'rails_helper'
-
-RSpec.describe RolesController, type: :controller do
+RSpec.describe Api::V1::RolesController, type: :controller do
   describe '#create' do
     context 'with valid params' do
       it 'should return created response' do

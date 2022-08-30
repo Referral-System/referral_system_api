@@ -1,6 +1,4 @@
-require 'rails_helper'
-
-RSpec.describe UsersController, type: :controller do
+RSpec.describe Api::V1::UsersController, type: :controller do
   before do
     Role.create(:id => 1, :name => 'administrator')
     Role.create(:id => 2, :name => 'authenticated user')

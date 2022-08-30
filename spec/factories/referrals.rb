@@ -1,7 +1,6 @@
 FactoryBot.define do
   factory :referral do
-    association :user, factory: :user
-    referred_by { user.id }
+    referred_by {}
     full_name { Faker::Name.name_with_middle }
     phone_number { Faker::PhoneNumber.phone_number }
     email { Faker::Internet.email }

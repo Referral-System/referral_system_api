@@ -1,11 +1,9 @@
-require 'rails_helper'
-
 RSpec.describe ' Referrals API', type: :request do
   let(:admin_role) { FactoryBot.create(:role, :role_admin) }
   let(:user_role) { FactoryBot.create(:role, :role_user) }
   let(:ta_role) { FactoryBot.create(:role, :role_ta) }
-  let(:ta_user) { FactoryBot.create(:user, role_id: ta_role) }
-  let(:regular_user) { FactoryBot.create(:user, role_id: user_role) }
+  let(:ta_user) { FactoryBot.create(:user, role_id: ta_role.id) }
+  let(:regular_user) { FactoryBot.create(:user, role_id: user_role.id) }
 
   describe '#Index' do
 
@@ -13,7 +11,7 @@ RSpec.describe ' Referrals API', type: :request do
       FactoryBot.create(:referral,
         referred_by: regular_user.id,
         tech_stack: 'ruby, RoR',
-        ta_recruiter: ta_user,
+        ta_recruiter: ta_user.id,
         signed_date: Time.now
       )
 
@@ -21,7 +19,7 @@ RSpec.describe ' Referrals API', type: :request do
         referred_by: ta_user.id,
         linkedin_url: 'https://linkedin.com/example.2',
         tech_stack: 'ruby, RoR, ',
-        ta_recruiter: ta_user,
+        ta_recruiter: ta_user.id,
         signed_date: Time.now
       )
 
@@ -29,14 +27,14 @@ RSpec.describe ' Referrals API', type: :request do
         referred_by: ta_user.id,
         linkedin_url: 'https://linkedin.com/example.3',
         tech_stack: 'ruby, RoR, ',
-        ta_recruiter: ta_user,
+        ta_recruiter: ta_user.id,
         signed_date: Time.now,
         active: false
       )
     end
     context 'When call referral index endpoint' do
       it 'returns all the active referrals' do
-        get '/referrals'
+        get '/api/v1/referrals'
 
         expect(response).to have_http_status(:success)
         expect(JSON.parse(response.body).size).to eq(2)
@@ -57,8 +55,7 @@ RSpec.describe ' Referrals API', type: :request do
       end
 
       it 'create a new referral' do
-        binding.pry
-        post '/referrals', params: data_referral
+        post '/api/v1/referrals', params: data_referral
 
         expect(response).to have_http_status(:created)
       end
