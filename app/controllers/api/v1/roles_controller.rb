@@ -1,10 +1,25 @@
 module Api
   module V1
     class RolesController < ApplicationController
+      swagger_controller :roles, "Roles Management"
+
+      swagger_api :index do
+        summary "Fetches all Roles"
+        notes "This lists all the available roles"
+        response :ok
+      end
       def index
         render json: Role.all
       end
 
+      swagger_api :create do
+        summary "Create a Roles"
+        notes "This create a new role"
+        param :form, :name, :string, :required, "Role name"
+        response :created
+        response :unprocessable_entity, "Parameter missing"
+        response :internal_server_error, "Error while creating a new role"
+      end
       def create
         # TODO: Implement validation to ensure only admin users can add new roles
         begin

@@ -1,10 +1,27 @@
 module Api
   module V1
     class UsersController < ApplicationController
+      swagger_controller :users, "Users Management"
+
+      swagger_api :index do
+        summary "Fetches all Users"
+        notes "This lists all the available users"
+        response :ok
+      end
       def index
         render json: User.where(active: true), except: [:active, :created_at, :updated_at]
       end
 
+      swagger_api :create do
+        summary "Create a User"
+        notes "This create a new user"
+        param :form, :name, :string, :required, "User name"
+        param :form, :email, :string, :required, "User email"
+        param :form, :role_id, :integer, :required, "User role id"
+        response :created
+        response :unprocessable_entity, "Error while creating a new user"
+        response :internal_server_error, "Error while creating a new role"
+      end
       def create
         # TODO: Verify if user has permissions to set role of the new user
         begin
@@ -28,6 +45,14 @@ module Api
         end
       end
 
+      swagger_api :show do
+        summary "Fetch a User"
+        notes "This list a specific user"
+        param :path, :id, :integer, :required, "User id"
+        response :ok
+        response :not_found, "Record not found"
+        response :internal_server_error, "Error while retrieving record"
+      end
       def show
         begin
           unless invalid_params_error
@@ -52,6 +77,17 @@ module Api
         end
       end
 
+      swagger_api :update do
+        summary "Update a User"
+        notes "This update an existing user"
+        param :path, :id, :integer, :required, "User id"
+        param :form, :name, :string, :optional, "User name"
+        param :form, :email, :string, :optional, "User email"
+        param :form, :role_id, :integer, :required, "User role id"
+        response :ok
+        response :unprocessable_entity, "Error while creating a new user"
+        response :internal_server_error, "Error while creating a new role"
+      end
       def update
         begin
           unless invalid_params_error || role_not_allowed
@@ -77,6 +113,15 @@ module Api
         end
       end
 
+      swagger_api :destroy do
+        summary "Delete a User"
+        notes "This delete a specific user"
+        param :path, :id, :integer, :required, "User id"
+        response :ok
+        response :unprocessable_entity
+        response :not_found, "Record not found"
+        response :internal_server_error, "Error while deleting user"
+      end
       def destroy
         begin
           unless invalid_params_error
@@ -86,7 +131,7 @@ module Api
                 'message': 'User successfully deleted.'
               }, status: :ok
             else
-              render json: user.errors, status: :unproccessable_entity
+              render json: user.errors, status: :unprocessable_entity
             end
           end
         rescue ActiveRecord::RecordNotFound => e

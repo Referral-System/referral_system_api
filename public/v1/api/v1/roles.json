@@ -1,0 +1,64 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://pure-caverns-73223.herokuapp.com",
+  "resourcePath": "roles",
+  "apis": [
+    {
+      "path": "/api/v1/roles",
+      "operations": [
+        {
+          "summary": "Fetches all Roles",
+          "notes": "This lists all the available roles",
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Api::V1::Roles#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/api/v1/roles",
+      "operations": [
+        {
+          "summary": "Create a Roles",
+          "notes": "This create a new role",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "name",
+              "type": "string",
+              "description": "Role name",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Parameter missing"
+            },
+            {
+              "code": 500,
+              "responseModel": null,
+              "message": "Error while creating a new role"
+            }
+          ],
+          "nickname": "Api::V1::Roles#create",
+          "method": "post"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

@@ -1,0 +1,127 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://pure-caverns-73223.herokuapp.com",
+  "resourcePath": "referrals",
+  "apis": [
+    {
+      "path": "/api/v1/referrals",
+      "operations": [
+        {
+          "summary": "Fetches all Referrals users",
+          "notes": "This lists all the referrals users",
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Api::V1::Referrals#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/api/v1/referrals",
+      "operations": [
+        {
+          "summary": "Create a Referral",
+          "notes": "This create a new referral",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "referred_by",
+              "type": "integer",
+              "description": "Refered by user ID",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "full_name",
+              "type": "string",
+              "description": "Full name of referred used",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "phone_number",
+              "type": "string",
+              "description": "Phone number of referred used",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "email",
+              "type": "string",
+              "description": "Email of referred used",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "linkedin_url",
+              "type": "string",
+              "description": "Linkedin url of referred used",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "cv_url",
+              "type": "string",
+              "description": "Cv url of referred used",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "tech_stack",
+              "type": "string",
+              "description": "Tech stack of referred used",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "ta_recruiter",
+              "type": "integer",
+              "description": "Ta recruiter ID",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "status",
+              "type": "integer",
+              "description": "Status of referred used",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "comments",
+              "type": "string",
+              "description": "Comments for referral",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Error while creating a new referral"
+            },
+            {
+              "code": 500,
+              "responseModel": null,
+              "message": "Error while creating a new record"
+            }
+          ],
+          "nickname": "Api::V1::Referrals#create",
+          "method": "post"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

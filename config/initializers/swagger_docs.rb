@@ -17,7 +17,7 @@ Swagger::Docs::Config.register_apis({
     :api_file_path => "public/v1",
     # the URL base path to your API
     :base_path => "https://pure-caverns-73223.herokuapp.com/",
-    # :base_path => "http://127.0.0.1:3005",
+    # :base_path => "http://localhost:3005",
     # if you want to delete all .json files at each generation
     :clean_directory => true,
     # add custom attributes to api-docs
