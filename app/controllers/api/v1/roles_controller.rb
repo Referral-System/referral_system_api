@@ -1,7 +1,7 @@
 module Api
   module V1
     class RolesController < ApplicationController
-      swagger_controller :roles, "Roles Management"
+      swagger_controller :roles, "Roles Management Endpoints"
 
       swagger_api :index do
         summary "Fetches all Roles"

@@ -2,7 +2,7 @@
   "apiVersion": "1.0",
   "swaggerVersion": "1.2",
   "basePath": "https://pure-caverns-73223.herokuapp.com",
-  "resourcePath": "roles",
+  "resourcePath": "Roles",
   "apis": [
     {
       "path": "/api/v1/roles",

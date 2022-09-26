@@ -1,7 +1,7 @@
 module Api
   module V1
     class ReferralsController < ApplicationController
-      swagger_controller :referrals, "Referrals Management"
+      swagger_controller :referrals, "Referrals Management Endpoints"
 
       swagger_api :index do
         summary "Fetches all Referrals users"

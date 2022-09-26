@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   match '*all', controller: 'application', action: 'cors_preflight_check', via: [:options]
 
-  get '/api-docs' => redirect('/api/index.html?url=/api/v1/welcome.json')
+  get '/api-docs' => redirect('/api/index.html?url=/api/v1/users.json')
   # Defines the root path route ("/")
   #get '/v1/', to: "welcome#index"
 

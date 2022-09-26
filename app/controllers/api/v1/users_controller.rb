@@ -1,7 +1,7 @@
 module Api
   module V1
     class UsersController < ApplicationController
-      swagger_controller :users, "Users Management"
+      swagger_controller :users, "Users Management Endpoints"
 
       swagger_api :index do
         summary "Fetches all Users"

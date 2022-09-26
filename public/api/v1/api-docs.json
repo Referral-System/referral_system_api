@@ -1,0 +1,29 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://pure-caverns-73223.herokuapp.com",
+  "apis": [
+    {
+      "path": "/v1/Welcome.{format}",
+      "description": "Welcome is an example"
+    },
+    {
+      "path": "/api/v1/Users.{format}",
+      "description": "Users Management Endpoints"
+    },
+    {
+      "path": "/api/v1/Referrals.{format}",
+      "description": "Referrals Management Endpoints"
+    },
+    {
+      "path": "/api/v1/Roles.{format}",
+      "description": "Roles Management Endpoints"
+    }
+  ],
+  "authorizations": null,
+  "info": {
+    "swagger": "2.0",
+    "title": "Referral System API",
+    "description": "Swagger documentation for Referral System API."
+  }
+}
