@@ -25,6 +25,7 @@ module Api
         param :form, :ta_recruiter, :integer, :optional, "Ta recruiter ID"
         param :form, :status, :integer, :optional, "Status of referred used"
         param :form, :comments, :string, :optional, "Comments for referral"
+        param :form, :active, :boolean, :optional, "Referral is active"
         response :created
         response :unprocessable_entity, "Error while creating a new referral"
         response :internal_server_error, "Error while creating a new record"
@@ -64,7 +65,8 @@ module Api
       private
     
       def referral_params
-        params.permit([:referred_by, :full_name, :phone_number, :email, :linkedin_url, :cv_url, :tech_stack, :ta_recruiter, :status, :comments])
+        params.permit([:referred_by, :full_name, :phone_number, :email, :linkedin_url, :cv_url,
+                       :tech_stack, :ta_recruiter, :status, :comments, :active])
       end
     
       def invalid_params_error

@@ -98,6 +98,13 @@
               "type": "string",
               "description": "Comments for referral",
               "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "active",
+              "type": "boolean",
+              "description": "Referral is active",
+              "required": false
             }
           ],
           "responseMessages": [
