@@ -12,6 +12,9 @@ gem "mysql2", "~> 0.5"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 5.0"
 
+# Permissions
+gem "cancancan"
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
@@ -39,7 +42,15 @@ gem "bootsnap", require: false
 gem 'swagger-docs'
 gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'master'
 
+# JWT
+gem "jwt"
+
+# Oauth
+gem "omniauth"
+gem 'omniauth-azure-oauth2'
+
 group :development, :test do
+  gem "dotenv-rails"
   gem 'pry-byebug'
   gem 'factory_bot_rails'
   gem 'rspec'

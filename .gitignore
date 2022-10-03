@@ -24,6 +24,7 @@
 /tmp/storage/*
 !/tmp/storage/
 !/tmp/storage/.keep
+.byebug_history
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key

@@ -1,7 +1,20 @@
 module Api
   module V1
     class UsersController < ApplicationController
+      before_action :authenticate_user!, only: [:authorize]
+
       swagger_controller :users, "Users Management Endpoints"
+
+      swagger_api :authorize do
+        summary "Get authorized user"
+        notes "This retrieve authenticated user"
+        param :header, 'access-token', :string, :required, "Access Token"
+        response :ok
+        response :unauthorized, "Not Authorized"
+      end
+      def authorize
+        render json: { user: @current_user }
+      end
 
       swagger_api :index do
         summary "Fetches all Users"

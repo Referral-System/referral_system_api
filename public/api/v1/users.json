@@ -5,6 +5,38 @@
   "resourcePath": "Users",
   "apis": [
     {
+      "path": "/api/v1/user/authorize",
+      "operations": [
+        {
+          "summary": "Get authorized user",
+          "notes": "This retrieve authenticated user",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "access-token",
+              "type": "string",
+              "description": "Access Token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Not Authorized"
+            }
+          ],
+          "nickname": "Api::V1::Users#authorize",
+          "method": "get"
+        }
+      ]
+    },
+    {
       "path": "/api/v1/users",
       "operations": [
         {

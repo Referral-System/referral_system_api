@@ -1,6 +1,9 @@
 module Api
   module V1
     class ReferralsController < ApplicationController
+      before_action :authenticate_user!
+      load_and_authorize_resource
+
       swagger_controller :referrals, "Referrals Management Endpoints"
 
       swagger_api :index do
@@ -9,7 +12,8 @@ module Api
         response :ok
       end
       def index
-        render json: Referral.where(active: true), except: [:active, :created_at, :updated_at]
+        referrals = Referral.accessible_by(current_ability)
+        render json: referrals, except: [:active, :created_at, :updated_at]
       end
     
       swagger_api :create do
