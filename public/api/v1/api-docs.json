@@ -4,19 +4,19 @@
   "basePath": "https://pure-caverns-73223.herokuapp.com",
   "apis": [
     {
-      "path": "/v1/Welcome.{format}",
+      "path": "/v1/welcome.{format}",
       "description": "Welcome is an example"
     },
     {
-      "path": "/api/v1/Users.{format}",
+      "path": "/api/v1/users.{format}",
       "description": "Users Management Endpoints"
     },
     {
-      "path": "/api/v1/Referrals.{format}",
+      "path": "/api/v1/referrals.{format}",
       "description": "Referrals Management Endpoints"
     },
     {
-      "path": "/api/v1/Roles.{format}",
+      "path": "/api/v1/roles.{format}",
       "description": "Roles Management Endpoints"
     }
   ],
