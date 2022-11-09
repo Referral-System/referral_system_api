@@ -8,7 +8,7 @@ FactoryBot.define do
     tech_stack {}
     ta_recruiter {}
     status { 1 }
-    comments { Faker::String.random}
+    comments { Faker::Name.name_with_middle }
     signed_date { Time.current }
     active { true }
 

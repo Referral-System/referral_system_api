@@ -6,8 +6,8 @@ ruby "2.7.3"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.3", ">= 7.0.3.1"
 
-# Use postgresql as the database for Active Record
-gem "pg", "~> 1.1"
+# Use mysql as the database for Active Record
+gem "mysql2", "~> 0.5"
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 5.0"
@@ -47,6 +47,7 @@ group :development, :test do
   gem 'rails-controller-testing'
   gem 'rspec-rails'
   gem 'spring-commands-rspec'
+  gem "dotenv-rails"
 end
 
 group :development do

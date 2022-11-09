@@ -45,7 +45,3 @@ Referral.destroy_all
    }
  ])
 end
-
-ActiveRecord::Base.connection.reset_pk_sequence!('roles')
-ActiveRecord::Base.connection.reset_pk_sequence!('users')
-ActiveRecord::Base.connection.reset_pk_sequence!('referrals')

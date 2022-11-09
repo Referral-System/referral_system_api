@@ -1,25 +1,9 @@
-# PostgreSQL. Versions 9.3 and up are supported.
-#
-# Install the pg driver:
-#   gem install pg
-# On macOS with Homebrew:
-#   gem install pg -- --with-pg-config=/usr/local/bin/pg_config
-# On macOS with MacPorts:
-#   gem install pg -- --with-pg-config=/opt/local/lib/postgresql84/bin/pg_config
-# On Windows:
-#   gem install pg
-#       Choose the win32 build.
-#       Install PostgreSQL and put its /bin directory on your path.
-#
-# Configure Using Gemfile
-# gem "pg"
-#
 default: &default
-  adapter: postgresql
-  encoding: unicode
-  connect_timeout:  <%= ENV.fetch('PSQL_CONNECT_TIMEOUT', 5) %>
-  read_timeout: <%= ENV.fetch('PSQL_READ_TIMEOUT', 5) %>
-  write_timeout: <%= ENV.fetch('PSQL_WRITE_TIMEOUT', 5) %>
+  adapter: mysql2
+  encoding: utf8
+  connect_timeout:  <%= ENV.fetch('MYSQL_CONNECT_TIMEOUT', 5) %>
+  read_timeout: <%= ENV.fetch('MYSQL_READ_TIMEOUT', 5) %>
+  write_timeout: <%= ENV.fetch('MYSQL_WRITE_TIMEOUT', 5) %>
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
@@ -28,14 +12,24 @@ default: &default
 development:
   <<: *default
   database: referral_system_api_development
-  username: <%= ENV.fetch('PSQL_DEV_USERNAME', nil) %>
-  password: <%= ENV.fetch('PSQL_DEV_PASSWORD', nil) %>
+  username: <%= ENV.fetch('MYSQL_DEV_USERNAME', nil) %>
+  password: <%= ENV.fetch('MYSQL_DEV_PASSWORD', nil) %>
+  host: <%= ENV.fetch('MYSQL_DEV_HOST', '127.0.0.1') %>
+  port: <%= ENV.fetch('MYSQL_DEV_PORT', '3306') %>
 
 test:
   <<: *default
   database: referral_system_api_test
+  username: <%= ENV.fetch('MYSQL_TEST_USERNAME', nil) %>
+  password: <%= ENV.fetch('MYSQL_TEST_PASSWORD', nil) %>
+  host: <%= ENV.fetch('MYSQL_TEST_HOST', nil) %>
+  port: <%= ENV.fetch('MYSQL_TEST_PORT', '3306') %>
 
 production:
   <<: *default
   database: referral_system_api_production
+  username: <%= ENV.fetch('MYSQL_PROD_USERNAME', nil) %>
+  password: <%= ENV.fetch('MYSQL_PROD_PASSWORD', nil) %>
+  host: <%= ENV.fetch('MYSQL_PROD_HOST', nil) %>
+  port: <%= ENV.fetch('MYSQL_PROD_PORT', '3306') %>
 
