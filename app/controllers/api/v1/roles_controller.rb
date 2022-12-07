@@ -1,6 +1,9 @@
 module Api
   module V1
     class RolesController < ApplicationController
+      before_action :authenticate_user!
+      load_and_authorize_resource
+
       swagger_controller :roles, "Roles Management Endpoints"
 
       swagger_api :index do
@@ -9,7 +12,7 @@ module Api
         response :ok
       end
       def index
-        render json: Role.all
+        render json: Role.accessible_by(current_ability)
       end
 
       swagger_api :create do

@@ -1,7 +1,8 @@
 module Api
   module V1
     class UsersController < ApplicationController
-      before_action :authenticate_user!, only: [:authorize]
+      before_action :authenticate_user!
+      load_and_authorize_resource
 
       swagger_controller :users, "Users Management Endpoints"
 
@@ -22,7 +23,7 @@ module Api
         response :ok
       end
       def index
-        render json: User.where(active: true), except: [:active, :created_at, :updated_at]
+        render json: User.where(active: true).accessible_by(current_ability), except: [:active, :created_at, :updated_at]
       end
 
       swagger_api :create do

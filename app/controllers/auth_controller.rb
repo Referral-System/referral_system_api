@@ -10,7 +10,7 @@ class AuthController < ApplicationController
         else
             user.update(user_hash.except(:role_id))
         end
-        app_token = create_app_token(user.id, { exp: 4.hours.from_now.to_i })
+        app_token = create_app_token(user.id, { exp: 24.hours.from_now.to_i })
         redirect_url =  request.env['omniauth.params']['redirect_url'] || "/"
         redirect_to "#{redirect_url}?token=#{app_token}", allow_other_host: true
     end

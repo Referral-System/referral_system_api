@@ -4,7 +4,7 @@ class ApplicationController < ActionController::API
   before_action :cors_set_access_control_headers
 
   rescue_from CanCan::AccessDenied do |exception|
-    render json: { message: "Unathorized" },status: 401
+    render json: { message: "Unauthorized" },status: 401
   end
 
   def cors_preflight_check
