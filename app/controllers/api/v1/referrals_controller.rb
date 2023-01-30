@@ -15,7 +15,8 @@ module Api
       def index
         referrals = Referral.accessible_by(current_ability).where(active: true)
         referrals = referrals.map { |referral| map_referral(referral) }
-
+        
+        Rails.logger.debug("Fetching all Referrals")
         render json: referrals, except: [:active, :created_at, :updated_at]
       end
 
@@ -46,8 +47,10 @@ module Api
 
           referral = Referral.new(new_referral)
           if referral.save
+            Rails.logger.debug("Creating referral with email #{referral.email}")
             render json: referral, except: [:created_at, :updated_at], status: :created
           else
+            Rails.logger.error("Error while creating a new referral")
             render json: {
               'message': 'Error while creating a new referral',
               'errors': referral.errors
@@ -64,6 +67,7 @@ module Api
 
       def show
         referral = Referral.find_by(id: params[:id], active: true)
+        Rails.logger.debug("Fetching referral with email #{referral.email}")
 
         render json: map_referral(referral), except: [:active, :created_at, :updated_at]
       end
@@ -90,12 +94,14 @@ module Api
       end
 
       def update
-        if referral_params[:status].present? && @current_user.role_id == 2 
+        if referral_params[:status].present? && @current_user.role_id == 2
+          Rails.logger.error("Error updating referral with id #{referral_params[:id]}")
           return render json: { message: "Unauthorized" },status: 401
         end
 
         current_referral.update!(referral_params)
 
+        Rails.logger.debug("Updating referral with id #{referral_params[:id]}")
         render json: {}, status: :no_content
       rescue ActiveRecord::RecordInvalid => e
         Rails.logger.error(e.message)
@@ -117,6 +123,7 @@ module Api
             active: false
           }
         )
+        Rails.logger.debug("Deleting referral with email #{current_referral.email}")
         render json: {}, status: :no_content
       rescue ActiveRecord::RecordInvalid => e
         Rails.logger.error(e.message)
@@ -147,6 +154,7 @@ module Api
         return render_invalid_recruiter_error(recruiter) unless recruiter.is_recruiter?
 
         current_referral.update!(recruiter: recruiter)
+        Rails.logger.debug("Assign recruiter to referral with email #{current_referral.email}")
         render json: {}, except: [:created_at, :updated_at], status: :no_content
       rescue ActiveRecord::RecordNotFound => e
         Rails.logger.error(e.message)

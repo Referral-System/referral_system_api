@@ -14,6 +14,7 @@ module Api
         response :unauthorized, 'Not Authorized'
       end
       def authorize
+        Rails.logger.debug("Retrieving user with email #{@current_user.email}")
         render json: { user: @current_user }
       end
 
@@ -23,6 +24,7 @@ module Api
         response :ok
       end
       def index
+        Rails.logger.debug("Fetching all Users")
         render json: User.where(active: true).accessible_by(current_ability),
           except: %i[active created_at updated_at]
       end
@@ -43,8 +45,10 @@ module Api
         user = User.new(user_params)
         unless role_not_allowed
           if user.save
+            Rails.logger.debug("Creating user with email #{user.email}")
             render json: user, except: %i[active created_at updated_at], status: :created
           else
+            Rails.logger.error("Error while creating a new user")
             render json: {
               'message': 'Error while creating a new user',
               'errors': user.errors
@@ -71,8 +75,10 @@ module Api
         unless invalid_params_error
           user = User.find(params[:id])
           if user.active
+            Rails.logger.debug("Fetching user with email #{user.email}")
             render json: user, status: :ok, except: %i[active created_at updated_at]
           else
+            Rails.logger.error("Error fetching user with id #{params[:id]}")
             render json: user.errors, status: :not_found
           end
         end
@@ -105,8 +111,10 @@ module Api
           user = User.find(params[:id])
 
           if user.update(user_params)
+            Rails.logger.debug("Updating user with email #{user.email}")
             render json: user, except: %i[active created_at updated_at], status: :ok
           else
+            Rails.logger.error("Error updating user with id #{params[:id]}")
             render json: user.errors, status: :unprocessable_entity
           end
         end
@@ -136,10 +144,12 @@ module Api
         unless invalid_params_error
           user = User.find(params[:id])
           if user.update(active: false)
+            Rails.logger.debug("Deleting user with email #{user.email}")
             render json: {
               'message': 'User successfully deleted.'
             }, status: :ok
           else
+            Rails.logger.error("Error while deleting user with id #{params[:id]}")
             render json: user.errors, status: :unprocessable_entity
           end
         end

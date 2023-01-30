@@ -19,6 +19,7 @@ class JwtAdapter
         exp: opts[:exp] || 1.hour.since(now).to_i,
         sub: user_id
       }
+      Rails.logger.debug("Creating new token for user with id #{user_id}")
       encode(payload)
     end
 
