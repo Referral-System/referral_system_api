@@ -114,16 +114,15 @@ module Api
       def update
         unless invalid_params_error
           user = User.find(params[:id])
+          user_role_id = user.role_id
 
-          if (user_params["role_id"] != 3 && user.role_id == 3)
-            referrals_updated = Referral.where(ta_recruiter: user.id).update_all(ta_recruiter: nil)
-            if user.update(user_params) && referrals_updated
-              Rails.logger.debug("Updating user with email #{user.email}")
-              render json: user, except: %i[active created_at updated_at], status: :ok
-            else
-              Rails.logger.error("Error updating user with id #{params[:id]}")
-              render json: user.errors, status: :unprocessable_entity
-            end
+          if user.update(user_params)
+            Referral.where(ta_recruiter: user.id).update_all(ta_recruiter: nil) if (user_params["role_id"] != 3 && user_role_id == 3)
+            Rails.logger.debug("Updating user with email #{user.email}")
+            render json: user, except: %i[active created_at updated_at], status: :ok
+          else
+            Rails.logger.error("Error updating user with id #{params[:id]}")
+            render json: user.errors, status: :unprocessable_entity
           end
         end
       rescue ActiveRecord::RecordNotFound => e
@@ -153,18 +152,15 @@ module Api
         unless invalid_params_error
           user = User.find(params[:id])
 
-          if (user.role_id == 3)
-            referrals_updated = Referral.where(ta_recruiter: user.id).update_all(ta_recruiter: nil)
-
-            if user.update(active: false) && referrals_updated
-              Rails.logger.debug("Deleting user with email #{user.email}")
-              render json: {
-                'message': "User successfully deleted.",
-              }, status: :ok
-            else
-              Rails.logger.error("Error while deleting user with id #{params[:id]}")
-              render json: user.errors, status: :unprocessable_entity
-            end
+          if user.update(active: false)
+            Referral.where(ta_recruiter: user.id).update_all(ta_recruiter: nil) if (user.role_id == 3)
+            Rails.logger.debug("Deleting user with email #{user.email}")
+            render json: {
+              'message': "User successfully deleted.",
+            }, status: :ok
+          else
+            Rails.logger.error("Error while deleting user with id #{params[:id]}")
+            render json: user.errors, status: :unprocessable_entity
           end
         end
       rescue ActiveRecord::RecordNotFound => e
