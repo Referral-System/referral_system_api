@@ -1,10 +1,11 @@
 class ApplicationController < ActionController::API
   include Authable
+  include DbLogger
 
   before_action :cors_set_access_control_headers
 
   rescue_from CanCan::AccessDenied do |exception|
-    Rails.logger.error("User has not the correct permissions, request was unauthorized")
+    log_error("User has not the correct permissions, request was unauthorized")
     render json: { message: "Unauthorized by CanCan" },status: 401
   end
 
@@ -23,19 +24,19 @@ class ApplicationController < ActionController::API
   # @return [void]
   def authenticate_user!
     token = request.authorization.split(' ').last
-    Rails.logger.error("Token is missing, request was unauthorized")
+    log_error("Token is missing, request was unauthorized")
     return render(json: { message: "Token is missing" }, status: :unauthorized) if token.nil?
 
     payload = JwtAdapter.decode(token)
     @current_user = User.find(payload[:sub])
   rescue JWT::VerificationError, JWT::DecodeError
-    Rails.logger.error("Incorrect JWT token, request was unauthorized")
+    log_error("Incorrect JWT token, request was unauthorized")
     render json: { message: "Unauthorized" }, status: :unauthorized
   rescue ActiveRecord::RecordNotFound
-    Rails.logger.debug("User was not found, request was unauthorized")
+    log_debug("User was not found, request was unauthorized")
     render json: { message: "User not found" }, status: :unauthorized
   rescue StandardError => e
-    Rails.logger.debug("Error while authorization, request was unauthorized")
+    log_debug("Error while authorization, request was unauthorized")
     render json: {}, status: :internal_server_error
   end
 

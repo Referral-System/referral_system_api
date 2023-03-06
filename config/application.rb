@@ -28,5 +28,7 @@ module ReferralSystemApi
     # OmniAuth Gem needs session handling to avoid OmniAuth::NoSessionError exception
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
+
+    config.autoload_paths << "#{Rails.root}/lib"
   end
 end

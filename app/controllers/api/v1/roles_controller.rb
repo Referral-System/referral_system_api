@@ -13,7 +13,7 @@ module Api
       end
 
       def index
-        Rails.logger.debug("Fetching all Roles")
+        log_debug("Fetching all Roles")
         render json: Role.accessible_by(current_ability)
       end
 
@@ -31,20 +31,20 @@ module Api
         begin
           role = Role.new(role_params)
           if role.save
-            Rails.logger.debug("Creating role with name #{role.name}")
+            log_debug("Creating role with name #{role.name}")
             render json: role, status: :created
           else
-            Rails.logger.error("Error while creating a new role")
+            log_error("Error while creating a new role")
             render json: role.errors, status: :unprocessable_entity
           end
         rescue ActionController::ParameterMissing => e
-          Rails.logger.error("Error while creating new role: #{e.message}")
+          log_error("Error while creating new role: #{e.message}")
           render json: {
             'message': "Parameter missing",
             'errors': e.message,
           }, status: :unprocessable_entity
         rescue StandardError => e
-          Rails.logger.error("Error while creating new role: #{e.message}")
+          log_error("Error while creating new role: #{e.message}")
           render json: {
             'message': "Error while creating a new role",
             'errors': e.message,
@@ -55,7 +55,7 @@ module Api
       private
 
       def raise_error(message)
-        Rails.logger.error(message)
+        log_error(message)
         render json: {
           'message': message,
         }, status: :unprocessable_entity

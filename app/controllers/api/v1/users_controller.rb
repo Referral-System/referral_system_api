@@ -15,7 +15,7 @@ module Api
       end
 
       def authorize
-        Rails.logger.debug("Retrieving user with email #{@current_user.email}")
+        log_debug("Retrieving user with email #{@current_user.email}")
         render json: { user: @current_user }
       end
 
@@ -26,7 +26,7 @@ module Api
       end
 
       def index
-        Rails.logger.debug("Fetching all Users")
+        log_debug("Fetching all Users")
         render json: User.where(active: true).accessible_by(current_ability),
           except: %i[active created_at updated_at]
       end
@@ -48,10 +48,10 @@ module Api
         user = User.new(user_params)
         unless role_not_allowed
           if user.save
-            Rails.logger.debug("Creating user with email #{user.email}")
+            log_debug("Creating user with email #{user.email}")
             render json: user, except: %i[active created_at updated_at], status: :created
           else
-            Rails.logger.error("Error while creating a new user")
+            log_error("Error while creating a new user")
             render json: {
               'message': "Error while creating a new user",
               'errors': user.errors,
@@ -59,7 +59,7 @@ module Api
           end
         end
       rescue StandardError => e
-        Rails.logger.error("Error while creating a new user: #{e.message}")
+        log_error("Error while creating a new user: #{e.message}")
         render json: {
           'message': "Error while creating a new record",
           'errors': [e.message],
@@ -79,10 +79,10 @@ module Api
         unless invalid_params_error
           user = User.find(params[:id])
           if user.active
-            Rails.logger.debug("Fetching user with email #{user.email}")
+            log_debug("Fetching user with email #{user.email}")
             render json: user, status: :ok, except: %i[active created_at updated_at]
           else
-            Rails.logger.error("Error fetching user with id #{params[:id]}")
+            log_error("Error fetching user with id #{params[:id]}")
             render json: user.errors, status: :not_found
           end
         end
@@ -92,7 +92,7 @@ module Api
           'errors': [e.message],
         }, status: :not_found
       rescue StandardError => e
-        Rails.logger.error("Error while retrieving user #{e.message}")
+        log_error("Error while retrieving user #{e.message}")
         render json: {
           'message': "Error while retrieving record",
           'errors': [e.message],
@@ -118,10 +118,10 @@ module Api
 
           if user.update(user_params)
             Referral.where(ta_recruiter: user.id).update_all(ta_recruiter: nil) if (user_params["role_id"] != 3 && user_role_id == 3)
-            Rails.logger.debug("Updating user with email #{user.email}")
+            log_debug("Updating user with email #{user.email}")
             render json: user, except: %i[active created_at updated_at], status: :ok
           else
-            Rails.logger.error("Error updating user with id #{params[:id]}")
+            log_error("Error updating user with id #{params[:id]}")
             render json: user.errors, status: :unprocessable_entity
           end
         end
@@ -131,7 +131,7 @@ module Api
           'errors': [e.message],
         }, status: :not_found
       rescue StandardError => e
-        Rails.logger.error("Error while retrieving user #{e.message}")
+        log_error("Error while retrieving user #{e.message}")
         render json: {
           'message': "Error while retrieving record",
           'errors': [e.message],
@@ -154,12 +154,12 @@ module Api
 
           if user.update(active: false)
             Referral.where(ta_recruiter: user.id).update_all(ta_recruiter: nil) if (user.role_id == 3)
-            Rails.logger.debug("Deleting user with email #{user.email}")
+            log_debug("Deleting user with email #{user.email}")
             render json: {
               'message': "User successfully deleted.",
             }, status: :ok
           else
-            Rails.logger.error("Error while deleting user with id #{params[:id]}")
+            log_error("Error while deleting user with id #{params[:id]}")
             render json: user.errors, status: :unprocessable_entity
           end
         end
@@ -169,7 +169,7 @@ module Api
           'errors': [e.message],
         }, status: :not_found
       rescue StandardError => e
-        Rails.logger.error("Error while deleting user: #{e.message}")
+        log_error("Error while deleting user: #{e.message}")
         render json: {
           'message': "Error while deleting user",
           'errors': [e.message],
@@ -196,7 +196,7 @@ module Api
         return if params[:id].match?(/\A\d+\z/)
 
         message = "ID is not a numeric value"
-        Rails.logger.error(message)
+        log_error(message)
         render json: {
           'message': "Invalid parameter",
           'errors': %i[message],
@@ -205,7 +205,7 @@ module Api
 
       def role_not_allowed
         message = "Role not allowed"
-        Rails.logger.error(message)
+        log_error(message)
 
         return unless Role.find(params[:role_id]).name == "admin"
 

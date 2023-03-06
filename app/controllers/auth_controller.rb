@@ -6,10 +6,10 @@ class AuthController < ApplicationController
     def callback
         user = User.find_by(email: user_hash[:email])
         if user.nil?
-            Rails.logger.debug("Creating user after login with email #{user_hash[:email]}")
+            log_debug("Creating user after login with email #{user_hash[:email]}")
             user = User.create!(user_hash)
         else
-            Rails.logger.debug("Updating user after login with email #{user_hash[:email]}")
+            log_debug("Updating user after login with email #{user_hash[:email]}")
             user.update(user_hash.except(:role_id))
         end
         app_token = create_app_token(user.id, { exp: 24.hours.from_now.to_i })
