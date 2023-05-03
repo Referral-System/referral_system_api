@@ -2,8 +2,6 @@ require "jwt"
 
 # Adapter to JWT gem
 class JwtAdapter
-  include DbLogger
-
   ALGORITHM = "HS256"
   KEY = Rails.application.credentials.secret_key_base
 
@@ -21,7 +19,7 @@ class JwtAdapter
         exp: opts[:exp] || 1.hour.since(now).to_i,
         sub: user_id
       }
-      log_debug("Creating new token for user with id #{user_id}")
+      log_debug("Creating new token for user with id #{user_id}", user_id)
       encode(payload)
     end
 
@@ -37,6 +35,23 @@ class JwtAdapter
       decoded = JWT.decode(token, KEY, true, { algorithm: ALGORITHM }).first
 
       decoded.transform_keys(&:to_sym)
+    end
+
+    # @param msg [String]
+    # @param user_id [Integer]
+    # @return [void]
+    def log_debug(msg, user_id)
+      data = {
+        view: "JwtAdapter",
+        action: "create_auth_token",
+        user_id: user_id,
+        request_payload: {},
+        message: msg,
+        has_error: false
+      }
+
+      Log.create!(data)
+      Rails.logger.debug(msg)
     end
   end
 end
