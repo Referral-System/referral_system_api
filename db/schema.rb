@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_17_160629) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_29_192536) do
   create_table "logs", charset: "utf8mb3", force: :cascade do |t|
     t.string "view"
     t.string "action"
@@ -42,6 +42,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_17_160629) do
 
   create_table "roles", charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "referral_system_email_users", charset: "utf8mb3", force: :cascade do |t|
+    t.string "email"
+    t.text "access_token"
+    t.text "refresh_token"
+    t.datetime "token_expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

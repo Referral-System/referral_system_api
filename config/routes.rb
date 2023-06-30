@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       resources :referrals
       resources :roles, only: [:create, :index]
       patch 'referral/:id/ta/:user_id', to: 'referrals#assign_recruiter', as: :referral_ta_assign
+      get 'referral/:id/cv', to: 'referrals#download_cv'
       get "user/:id/permissions" => "permissions#show"
       get "user/permissions", to: "permissions#index"
     end

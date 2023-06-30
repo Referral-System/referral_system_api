@@ -97,12 +97,18 @@ GEM
     faraday (2.6.0)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
+    faraday-multipart (1.0.4)
+      multipart-post (~> 2)
     faraday-net_http (3.0.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
     hashie (5.0.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
+    interactor (3.1.2)
+    interactor-rails (2.2.1)
+      interactor (~> 3.0)
+      rails (>= 4.2)
     jwt (2.5.0)
     loofah (2.18.0)
       crass (~> 1.0.2)
@@ -116,6 +122,7 @@ GEM
     minitest (5.16.3)
     msgpack (1.5.6)
     multi_xml (0.6.0)
+    multipart-post (2.3.0)
     mysql2 (0.5.4)
     net-imap (0.2.3)
       digest
@@ -208,7 +215,6 @@ GEM
       rspec-support (~> 3.11.0)
     rspec-mocks (3.11.1)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.11.0)
     rspec-rails (5.1.2)
       actionpack (>= 5.2)
       activesupport (>= 5.2)
@@ -217,6 +223,7 @@ GEM
       rspec-expectations (~> 3.10)
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
+      rspec-support (~> 3.11.0)
     rspec-support (3.11.0)
     rspec_junit_formatter (0.5.1)
       rspec-core (>= 2, < 4, != 2.12.0)
@@ -250,6 +257,9 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker!
+  faraday (~> 2.2)
+  faraday-multipart (~> 1.0)
+  interactor-rails (~> 2.0)
   jwt
   mysql2 (~> 0.5)
   omniauth

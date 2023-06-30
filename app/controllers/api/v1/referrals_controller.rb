@@ -46,6 +46,19 @@ module Api
           new_referral[:referred_by] = @current_user.id
           new_referral[:active] = true
 
+          if params[:file]
+            filename = upload_file(new_referral[:full_name], params[:file])
+            if filename.nil?
+              log_error("Error while creating a new referral: #{e.message}")
+              render json: {
+                'message': "Error while creating a new record",
+                'errors': [e.message],
+              }, status: :internal_server_error
+            end
+
+            new_referral[:cv_url] = filename
+          end
+
           referral = Referral.new(new_referral)
           ActiveRecord::Base.transaction do
             referral.save!
@@ -57,12 +70,12 @@ module Api
           message = "Error, the transaction has failed, reason: #{e.message}"
           log_error(message)
 
-          render json: { message: message, errors: referral.errors }, status: :unprocessable_entity
+          render json: { message: message, errors: referral&.errors }, status: :unprocessable_entity
         rescue StandardError => e
           message = "Error while creating a new referral: #{e.message}"
           log_error(message)
 
-          render json: { message: message, errors: referral.errors }, status: :internal_server_error
+          render json: { message: message, errors: referral&.errors }, status: :internal_server_error
         end
       end
 
@@ -107,6 +120,19 @@ module Api
 
           return render json: { message: "Unauthorized" }, status: 401
         end
+
+        if params[:file]
+          filename = upload_file(referral_params[:full_name], params[:file], current_referral[:cv_url])
+          if filename.nil?
+            log_error("Error while updating a referral: #{e.message}")
+            render json: {
+              'message': "Error while updating a record",
+              'errors': [e.message],
+            }, status: :internal_server_error
+          end
+
+          referral_params[:cv_url] = filename
+        end        
 
         ActiveRecord::Base.transaction do
           current_referral.update!(referral_params)
@@ -182,7 +208,44 @@ module Api
         }, status: :internal_server_error
       end
 
+      swagger_api :download_cv do
+        summary "Download referral cv"
+        notes "Download referral cv from sharepoint"
+        param :path, :id, :integer, :required, "referral id"
+        response :no_content
+        response :not_found, "Record not found"
+        response :internal_server_error, "Error while downloading cv"
+      end
+
+      def download_cv
+        client = API::MicrosoftGraphClient.new(ReferralSystemEmailUser.first&.current_access_token)
+        result = client.download_file(current_referral.cv_url)
+        log_debug("Download #{current_referral.email} cv")
+        send_file(result, type: result.content_type, filename: current_referral.cv_url)
+      rescue ActiveRecord::RecordNotFound => e
+        log_error(e.message)
+        render json: { message: "Record not found", errors: [e.message] }, status: :not_found
+      rescue StandardError => e
+        log_error("Error while downloading cv #{e.message}")
+        render json: {
+          'message': "Error while downloading cv",
+          'errors': [e.message],
+        }, status: :internal_server_error
+      end
+
       private
+
+      # @param name [String]
+      # @param file [File]
+      # @return string
+      def upload_file(name, file, filename = nil)
+        original_name = file.original_filename.split(".").last
+        filename ||= "#{String.new(name).gsub!(" ", "_")}-#{Time.now.to_date}-#{(rand*100).to_i}.#{original_name}"
+        result = UploadFile.call(file: file, filename: filename)
+        return if result.failure?
+
+        filename
+      end
 
       def map_referral(referral)
         {
@@ -203,7 +266,7 @@ module Api
       end
 
       def referral_params
-        params.permit([:referred_by, :full_name, :phone_number, :email, :linkedin_url, :cv_url,
+        params.permit([:referred_by, :full_name, :phone_number, :email, :linkedin_url,
                        :tech_stack, :ta_recruiter, :status, :comments, :active])
       end
 

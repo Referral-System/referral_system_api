@@ -45,6 +45,13 @@ gem "faker", :git => "https://github.com/faker-ruby/faker.git", :branch => "mast
 # JWT
 gem "jwt"
 
+# Faraday
+gem "faraday", "~> 2.2"
+gem "faraday-multipart", "~> 1.0"
+
+# Interactor
+gem "interactor-rails", "~> 2.0"
+
 # Oauth
 gem "omniauth"
 gem "omniauth-azure-oauth2"
