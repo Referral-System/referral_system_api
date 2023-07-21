@@ -23,6 +23,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_192536) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "referral_system_email_users", charset: "utf8mb3", force: :cascade do |t|
+    t.string "email"
+    t.text "access_token"
+    t.text "refresh_token"
+    t.datetime "token_expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "referrals", charset: "utf8mb3", force: :cascade do |t|
     t.integer "referred_by"
     t.string "full_name"
@@ -42,15 +51,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_192536) do
 
   create_table "roles", charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "referral_system_email_users", charset: "utf8mb3", force: :cascade do |t|
-    t.string "email"
-    t.text "access_token"
-    t.text "refresh_token"
-    t.datetime "token_expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
