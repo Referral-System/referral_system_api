@@ -62,6 +62,7 @@ module Api
           ActiveRecord::Base.transaction do
             referral.save!
             referral.referral_status_histories.new(referral_status_history_params(referral.referral_status_id)).save!
+            send_email(referral)
             log_debug("Creating referral with email #{referral.email}")
 
             render json: referral, except: [:created_at, :updated_at], status: :created
@@ -224,7 +225,6 @@ module Api
       end
 
       def download_cv
-        client = API::MicrosoftGraphClient.new(ReferralSystemEmailUser.first&.current_access_token)
         result = client.download_file(current_referral.cv_url)
         log_debug("Download #{current_referral.email} cv")
         send_file(result, type: result.content_type, filename: current_referral.cv_url)
@@ -240,6 +240,26 @@ module Api
       end
 
       private
+
+      # @return [MicrosoftGraphClient]
+      def client
+        API::MicrosoftGraphClient.new(ReferralSystemEmailUser.first&.current_access_token)
+      end
+
+      # @param referral [Referral]
+      # @return [void]
+      def send_email(referral)
+        template = File.read('app/mailers/templates/new_referral.html.erb')
+        variables = {
+          referral_id: referral.id,
+          referral_name: referral.full_name,
+          referral_contact: "#{referral.email} (#{referral.phone_number})",
+          referral_date: referral.created_at.strftime("%Y-%m-%d"),
+          referred_by: "#{referral.referrer.name} (#{referral.referrer.email})"
+        }
+        payload = API::Mapper.email(template % variables)
+        client.send_mail(payload)
+      end
 
       # @param name [String]
       # @param file [File]

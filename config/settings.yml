@@ -1,0 +1,6 @@
+---
+shared:
+  notification_emails:
+    - cpujol@apexsystems.com
+  cc_notification_emails:
+    - clopez@apexsystems.com

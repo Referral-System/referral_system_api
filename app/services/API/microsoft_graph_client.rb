@@ -43,6 +43,13 @@ module API
       open(url, "Authorization" => "Bearer #{token}")
     end
 
+    # @param  payload [Hash{Symbol->Object}]
+    # @return (see #put)
+    def send_mail(payload)
+      url = "#{BASE_URL}/me/sendMail"
+      post(url, payload)
+    end
+
     private
 
     attr_reader :client, :token
@@ -54,6 +61,13 @@ module API
         "Authorization" => "Bearer #{token}",
         "Content-Type" => "multipart/form-data"
       }.compact.freeze
+    end
+
+    # @return [Faraday::Response]
+    def post(url, payload = {})
+      client.post(url, payload) do |req|
+        req.headers[:content_type] = 'application/json'
+      end
     end
 
     # @return [Faraday::Response]
