@@ -4,6 +4,9 @@ module Api
       before_action :authenticate_user!
       load_and_authorize_resource
 
+      NEW_REFERRAL_SUBJECT = "New Referral Notification"
+      REFERRAL_ASSIGNED_SUBJECT = "New Referral Assigned"
+
       swagger_controller :referrals, "Referrals Management Endpoints"
 
       swagger_api :index do
@@ -41,6 +44,7 @@ module Api
       def create
         begin
           new_referral = referral_params
+          new_referral[:referral_status_id] ||= ReferralStatus.first.id
           new_referral[:linkedin_url] = referral_params[:linkedin_url].delete(' ')
           new_referral[:referred_by] = @current_user.id
           new_referral[:active] = true
@@ -62,7 +66,7 @@ module Api
           ActiveRecord::Base.transaction do
             referral.save!
             referral.referral_status_histories.new(referral_status_history_params(referral.referral_status_id)).save!
-            send_email(referral)
+            send_new_referral_email(referral)
             log_debug("Creating referral with email #{referral.email}")
 
             render json: referral, except: [:created_at, :updated_at], status: :created
@@ -200,6 +204,7 @@ module Api
         return render_invalid_recruiter_error(recruiter) unless recruiter.is_recruiter?
         ActiveRecord::Base.transaction do
           current_referral.update!(recruiter: recruiter)
+          send_referral_assigned_email(current_referral, recruiter)
         end
         log_debug("Assign recruiter to referral with email #{current_referral.email}")
 
@@ -248,17 +253,37 @@ module Api
 
       # @param referral [Referral]
       # @return [void]
-      def send_email(referral)
+      def send_new_referral_email(referral)
         template = File.read('app/mailers/templates/new_referral.html.erb')
-        variables = {
+        message = template % new_referral_variables(referral)
+        to_recipients = API::Mapper.build_recipients(:notification_emails)
+        cc_recipients = API::Mapper.build_recipients(:cc_notification_emails)
+        payload = API::Mapper.email(message, NEW_REFERRAL_SUBJECT, to_recipients, cc_recipients)
+        client.send_mail(payload)
+      end
+
+      # @param referral [Referral]
+      # @param recruiter [User]
+      # @return [void]
+      def send_referral_assigned_email(referral, recruiter)
+        template = File.read('app/mailers/templates/referral_assigned.html.erb')
+        message = template % new_referral_variables(referral)
+        to_recipients = [{ emailAddress: { address: recruiter.email }}]
+        cc_recipients = API::Mapper.build_recipients(:cc_notification_emails)
+        payload = API::Mapper.email(message, REFERRAL_ASSIGNED_SUBJECT, to_recipients, cc_recipients)
+        client.send_mail(payload)
+      end
+
+      # @param referral [Referral]
+      # @return [Hash]
+      def new_referral_variables(referral)
+        {
           referral_id: referral.id,
           referral_name: referral.full_name,
           referral_contact: "#{referral.email} (#{referral.phone_number})",
           referral_date: referral.created_at.strftime("%Y-%m-%d"),
           referred_by: "#{referral.referrer.name} (#{referral.referrer.email})"
         }
-        payload = API::Mapper.email(template % variables)
-        client.send_mail(payload)
       end
 
       # @param name [String]

@@ -3,25 +3,24 @@
 module API
   module Mapper
     class << self
-      NEW_REFERRAL_SUBJECT = "New Referral Notification"
-
       # @param message [String]
+      # @param subject [String]
+      # @param to_recipients [Array]
+      # @param cc_recipients [Array]
       # @return [Hash{Symbol->Object}]
-      def email(message)
+      def email(message, subject, to_recipients, cc_recipients)
         {
           message: {
-            subject: NEW_REFERRAL_SUBJECT,
+            subject: subject,
             body: {
               contentType: "HTML",
               content: message
             },
-            toRecipients: build_recipients(:notification_emails),
-            ccRecipients: build_recipients(:cc_notification_emails)
+            toRecipients: to_recipients,
+            ccRecipients: cc_recipients
           }
         }
       end
-
-      private
 
       # @param key [Symbol]
       # @return [Array<Hash{Symbol->Object}>]
