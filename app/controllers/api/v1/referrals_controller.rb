@@ -52,10 +52,10 @@ module Api
           if params[:file]
             filename = upload_file(new_referral[:full_name], params[:file])
             if filename.nil?
-              log_error("Error while creating a new referral: #{e.message}")
+              log_error("Error while uploading a file")
               render json: {
                 'message': "Error while creating a new record",
-                'errors': [e.message],
+                'errors': [],
               }, status: :internal_server_error
             end
 
@@ -73,11 +73,13 @@ module Api
           end
         rescue ActiveRecord::RecordInvalid => e
           message = "Error, the transaction has failed, reason: #{e.message}"
+          delete_file(filename) if defined?(filename)
           log_error(message)
 
           render json: { message: message, errors: referral&.errors }, status: :unprocessable_entity
         rescue StandardError => e
           message = "Error while creating a new referral: #{e.message}"
+          delete_file(filename) if defined?(filename)
           log_error(message)
 
           render json: { message: message, errors: referral&.errors }, status: :internal_server_error
@@ -129,10 +131,10 @@ module Api
         if params[:file]
           filename = upload_file(referral_params[:full_name], params[:file], current_referral[:cv_url])
           if filename.nil?
-            log_error("Error while updating a referral: #{e.message}")
+            log_error("Error while updating file")
             render json: {
               'message': "Error while updating a record",
-              'errors': [e.message],
+              'errors': [],
             }, status: :internal_server_error
           end
 
@@ -296,6 +298,14 @@ module Api
         return if result.failure?
 
         filename
+      end
+
+      # @param filename [String,nil]
+      # @return string
+      def delete_file(filename = nil)
+        return if filename.nil?
+
+        client.delete_file(filename)
       end
 
       def map_referral(referral)

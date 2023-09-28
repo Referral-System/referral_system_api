@@ -43,6 +43,13 @@ module API
       open(url, "Authorization" => "Bearer #{token}")
     end
 
+    # @param  filename [String]
+    # @return (see #put)
+    def delete_file(filename)
+      url = "sites/#{Rails.configuration.x.azure.drive_url}/#{filename}"
+      delete(url)
+    end
+
     # @param  payload [Hash{Symbol->Object}]
     # @return (see #put)
     def send_mail(payload)
@@ -73,6 +80,11 @@ module API
     # @return [Faraday::Response]
     def put(url, payload = {})
       client.put(url, payload)
+    end
+
+    # @return [Faraday::Response]
+    def delete(url)
+      client.delete(url)
     end
   end
 end
