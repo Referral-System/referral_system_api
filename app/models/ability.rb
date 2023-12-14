@@ -16,7 +16,7 @@ class Ability
     # User abilities
     can :manage, User, id: user.id
 
-    can [:read, :assign_recruiter, :update], Referral if user.role_id == 3
+    can [:read, :assign_recruiter, :download_cv, :update], Referral if user.role_id == 3
 
     return unless user.role_id == 1
 
